@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GST Practice Suite</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-badge">G</div>
+          <span>GST Practice</span>
+        </div>
+
+        <nav class="nav">
+          <button class="nav-item active" data-screen="dashboard">Dashboard</button>
+          <button class="nav-item" data-screen="clients">Clients</button>
+          <button class="nav-item" data-screen="import">Import Data</button>
+          <button class="nav-item" data-screen="reco">Reconciliation</button>
+          <button class="nav-item" data-screen="returns">GST Returns</button>
+          <button class="nav-item" data-screen="checks">Compliance Checks</button>
+          <button class="nav-item" data-screen="reports">Reports</button>
+          <button class="nav-item" data-screen="settings">Settings</button>
+
+          <div class="subhead">Advanced Tools</div>
+          <button class="nav-item" data-screen="rule-registry">Rule Registry</button>
+          <button class="nav-item" data-screen="mappings">Custom Mapping</button>
+          <button class="nav-item" data-screen="logs">Import Logs</button>
+        </nav>
+      </aside>
+
+      <main class="main-area">
+        <header class="topbar">
+          <div class="search-wrap">
+            <span>🔎</span>
+            <input id="globalSearch" type="text" placeholder="Search client, GSTIN, invoice, supplier..." />
+          </div>
+
+          <div class="top-actions">
+            <button class="btn secondary" id="addClientTopBtn">+ Add Client</button>
+            <button class="btn primary" id="createSampleBtn">Create Sample Data</button>
+          </div>
+        </header>
+
+        <section id="dashboard" class="screen active">
+          <div class="quick-grid">
+            <button class="quick-btn" data-screen="clients"><span class="icon">👤</span> Add Client</button>
+            <button class="quick-btn" data-screen="import"><span class="icon">📦</span> Import GST JSON</button>
+            <button class="quick-btn" data-screen="import"><span class="icon">📘</span> Import Books Excel</button>
+            <button class="quick-btn" data-screen="reco"><span class="icon">⚡</span> Run Reconciliation</button>
+          </div>
+
+          <div class="kpi-grid">
+            <article class="kpi-card">
+              <div class="label">Total active clients</div>
+              <div id="kpiClients" class="value">0</div>
+              <div class="delta positive">+2 this month</div>
+            </article>
+            <article class="kpi-card">
+              <div class="label">GST registrations</div>
+              <div id="kpiRegistrations" class="value">0</div>
+              <div class="delta positive">Across 4 filing statuses</div>
+            </article>
+            <article class="kpi-card">
+              <div class="label">Returns pending preparation</div>
+              <div id="kpiPendingReturns" class="value">0</div>
+              <div class="delta negative">2 require review</div>
+            </article>
+            <article class="kpi-card">
+              <div class="label">Unresolved discrepancies</div>
+              <div id="kpiExceptions" class="value">0</div>
+              <div class="delta negative">3 ITC items need verification</div>
+            </article>
+          </div>
+
+          <div class="two-col">
+            <div class="panel">
+              <div class="panel-header">
+                <h3>Recent tasks</h3>
+                <button class="btn secondary" id="viewPendingBtn">View Pending Exceptions</button>
+              </div>
+              <div id="taskList" class="task-list"></div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">
+                <h3>Import timeline</h3>
+                <span class="badge">Last 14 days</span>
+              </div>
+              <div id="timelineList" class="task-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="clients" class="screen">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Client Master</h3>
+              <button class="btn primary" id="addClientBtn">Add Client</button>
+            </div>
+
+            <div id="clientFormGrid" class="form-grid hidden">
+              <div class="field">
+                <label>Client Name</label>
+                <input id="clientName" />
+              </div>
+              <div class="field">
+                <label>GSTIN</label>
+                <input id="clientGSTIN" />
+              </div>
+              <div class="field">
+                <label>Legal Name</label>
+                <input id="clientLegalName" />
+              </div>
+              <div class="field">
+                <label>State</label>
+                <input id="clientState" />
+              </div>
+              <div class="field">
+                <label>Business Type</label>
+                <select id="clientType">
+                  <option>Proprietorship</option>
+                  <option>Partnership</option>
+                  <option>Pvt Ltd</option>
+                  <option>LLP</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Portal Status</label>
+                <select id="clientStatus">
+                  <option>Verified</option>
+                  <option>Provisional</option>
+                  <option>Pending</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="clientTableWrap"></div>
+          </div>
+        </section>
+
+        <section id="import" class="screen">
+          <div class="two-col">
+            <div class="panel">
+              <div class="panel-header">
+                <h3>Import GST Files</h3>
+                <button class="btn primary" id="importGstBtn">Import GST Files</button>
+              </div>
+              <input id="gstFileInput" type="file" multiple class="hidden" accept=".json,.zip,.xlsx,.xls,.csv" />
+              <div class="drop-zone" id="gstDropZone">Drop GST portal JSON / ZIP / Excel / CSV files here or click to browse</div>
+              <div id="gstFileList" class="task-list"></div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">
+                <h3>Import Books / Sales / Purchase Register</h3>
+                <button class="btn primary" id="importBooksBtn">Import Books Excel</button>
+              </div>
+              <input id="booksFileInput" type="file" multiple class="hidden" accept=".xlsx,.xls,.csv" />
+              <div class="drop-zone" id="booksDropZone">Drop purchase register, sales register, ledger, or export files here</div>
+              <div id="booksFileList" class="task-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="reco" class="screen">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Reconciliation Engine</h3>
+              <div class="top-actions">
+                <button class="btn secondary" id="runProfileBtn">Use Default Profile</button>
+                <button class="btn primary" id="runReconciliationBtn">Run Reconciliation</button>
+              </div>
+            </div>
+
+            <div class="summary-grid">
+              <article class="summary-card">
+                <div class="label">Client</div>
+                <div class="summary-value" id="clientNameSummary">Metro Traders</div>
+              </article>
+              <article class="summary-card">
+                <div class="label">GSTIN</div>
+                <div class="summary-value" id="gstinSummary">27ABCDE1234F1Z5</div>
+              </article>
+              <article class="summary-card">
+                <div class="label">Financial year</div>
+                <div class="summary-value">2024-25</div>
+              </article>
+              <article class="summary-card">
+                <div class="label">Return period</div>
+                <div class="summary-value">May-2024</div>
+              </article>
+            </div>
+
+            <div class="summary-grid" style="margin-top: 18px;">
+              <article class="summary-card">
+                <div class="label">Books records</div>
+                <div class="summary-value" id="booksCount">0</div>
+              </article>
+              <article class="summary-card">
+                <div class="label">Portal records</div>
+                <div class="summary-value" id="portalCount">0</div>
+              </article>
+              <article class="summary-card">
+                <div class="label">Matched / Review</div>
+                <div class="summary-value" id="matchSummary">0 / 0</div>
+              </article>
+            </div>
+
+            <div style="margin-top: 18px;">
+              <div id="recoTable"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="returns" class="screen">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Return Workings</h3>
+              <button class="btn primary" id="prepareReturnBtn">Prepare Draft Return</button>
+            </div>
+
+            <div class="tabs">
+              <button class="tab active" data-return="gstr1">GSTR-1</button>
+              <button class="tab" data-return="gstr3b">GSTR-3B</button>
+              <button class="tab" data-return="gstr9">GSTR-9</button>
+              <button class="tab" data-return="gstr9c">GSTR-9C</button>
+            </div>
+
+            <div id="returnTable"></div>
+          </div>
+        </section>
+
+        <section id="checks" class="screen">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Compliance & statutory validation</h3>
+              <button class="btn primary" id="runValidationBtn">Run Checks</button>
+            </div>
+            <div id="validationTable"></div>
+          </div>
+        </section>
+
+        <section id="reports" class="screen">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Excel and report exports</h3>
+              <div class="top-actions">
+                <button class="btn secondary" onclick="exportCSV('exceptions')">Export Exceptions</button>
+                <button class="btn primary" onclick="exportCSV('summary')">Export Summary</button>
+              </div>
+            </div>
+            <div id="reportSummary"></div>
+          </div>
+        </section>
+
+        <section id="settings" class="screen">
+          <div class="two-col">
+            <div class="panel">
+              <h3>AI Integration</h3>
+              <div class="field">
+                <label>AI Provider</label>
+                <select id="aiProvider">
+                  <option value="openrouter">OpenRouter / free compatible API</option>
+                  <option value="gemini">Google Gemini (if enabled)</option>
+                  <option value="local">Local rule-based assistant</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>API Key</label>
+                <input id="aiKey" type="password" placeholder="Leave blank for local mode" />
+              </div>
+
+              <div class="field">
+                <label>Model</label>
+                <input id="aiModel" value="openai/gpt-oss-20b:free" />
+              </div>
+
+              <button class="btn primary" id="testAiBtn" style="margin-top: 12px;">Test AI Connection</button>
+              <div id="aiStatus" class="notice" style="margin-top: 12px;">Local AI assistant is enabled. Add a provider key to use a live model.</div>
+            </div>
+
+            <div class="panel">
+              <h3>GST Portal API status</h3>
+              <div class="danger-block">
+                There is no public GST portal API for normal browser-based testing. The GST portal is primarily a taxpayer-authenticated portal, not a public data API. This app works by importing JSON, ZIP, XLSX, and CSV exports from the taxpayer's GST files and validates them locally.
+              </div>
+              <div class="mini" style="margin-top: 12px;">
+                Recommended secure architecture for multi-user environments:
+                - secure backend with authentication
+                - encrypted storage
+                - logged access
+                - authorized GST integrations only if a sanctioned API is available
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="rule-registry" class="screen">
+          <div class="panel">
+            <h3>Rule Registry</h3>
+            <div id="ruleTable"></div>
+          </div>
+        </section>
+
+        <section id="mappings" class="screen">
+          <div class="panel">
+            <h3>Custom Column Mapping</h3>
+            <div id="mappingTable"></div>
+          </div>
+        </section>
+
+        <section id="logs" class="screen">
+          <div class="panel">
+            <h3>Data Import Logs</h3>
+            <div id="logTable"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
+
+

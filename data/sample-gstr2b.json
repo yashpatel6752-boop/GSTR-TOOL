@@ -1,0 +1,44 @@
+{
+  "gstin": "27ABCDE1234F1Z5",
+  "returnPeriod": "2024-05",
+  "financialYear": "2024-25",
+  "reportType": "GSTR-2B",
+  "records": [
+    {
+      "invoiceNo": "INV-1001",
+      "supplierGstin": "27AAAAA0000A1Z5",
+      "supplierName": "Shree Steel Industries",
+      "invoiceDate": "2024-05-05",
+      "taxableValue": 220000,
+      "igst": 0,
+      "cgst": 9900,
+      "sgst": 9900,
+      "cess": 0,
+      "status": "Available"
+    },
+    {
+      "invoiceNo": "INV-1018",
+      "supplierGstin": "27BBBBB1111B1Z5",
+      "supplierName": "Bharat Components",
+      "invoiceDate": "2024-05-17",
+      "taxableValue": 102400,
+      "igst": 0,
+      "cgst": 4608,
+      "sgst": 4608,
+      "cess": 0,
+      "status": "Available"
+    },
+    {
+      "invoiceNo": "INV-1135",
+      "supplierGstin": "29CCCCC2222C1Z5",
+      "supplierName": "Greenpack Suppliers",
+      "invoiceDate": "2024-05-29",
+      "taxableValue": 76000,
+      "igst": 0,
+      "cgst": 3420,
+      "sgst": 3420,
+      "cess": 0,
+      "status": "Available"
+    }
+  ]
+}
